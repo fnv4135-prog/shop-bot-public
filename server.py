@@ -29,7 +29,7 @@ def webhook():
         data = request.get_json()
 
         # Создаем объект Update
-        update = types.Update(**data)
+        data = request.get_json()
 
         # Запускаем асинхронную обработку в новом event loop
         loop = asyncio.new_event_loop()
