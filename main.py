@@ -110,5 +110,5 @@ async def main():
     await dp.start_polling(bot)
 
 
-#async def run_bot():
-#    await main()
+async def main():
+    pass

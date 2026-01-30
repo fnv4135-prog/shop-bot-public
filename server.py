@@ -22,7 +22,7 @@ def home():
 
 
 @app.route(WEBHOOK_PATH, methods=['POST'])
-async def webhook():
+def webhook():
     """Обработчик вебхука"""
     try:
         # Получаем данные от Telegram
@@ -31,8 +31,10 @@ async def webhook():
         # Создаем объект Update
         update = types.Update(**data)
 
-        # Передаем обработчику - ВНИМАНИЕ: метод feed_update не принимает bot в aiogram 3.x
-        await dp.feed_update(update)
+        # Запускаем асинхронную обработку в новом event loop
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(dp.feed_update(update))
 
         return Response(status=200)
 
