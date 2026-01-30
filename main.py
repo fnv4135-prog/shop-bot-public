@@ -114,5 +114,5 @@ async def main():
 async def run_bot():
     await main()
 
-if __name__ == "__main__":
-    asyncio.run(run_bot())
+#if __name__ == "__main__":
+#    asyncio.run(run_bot())
