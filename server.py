@@ -40,7 +40,7 @@ def webhook():
 
     except Exception as e:
         logging.error(f"Webhook error: {str(e)}", exc_info=True)
-        return Response(status=500)
+        return Response(status=200)
 
 
 async def setup_webhook():
@@ -56,7 +56,7 @@ async def setup_webhook():
 # Устанавливаем вебхук при старте
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
-loop.run_until_complete(setup_webhook())
+loop.run_until_complete(dp.feed_update(bot, update))
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
