@@ -21,7 +21,7 @@ products = [
 ]
 
 
-@dp.message(Command("start"))
+@dp.message(Command("К телу мечты"))
 async def start_command(message: types.Message):
     """Обработчик команды /start"""
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
