@@ -21,14 +21,15 @@ products = [
 ]
 
 
-@dp.message(Command("К телу мечты"))
+@dp.message(Command("start"))
 async def start_command(message: types.Message):
-    """Обработчик команды /start"""
+    """Обработчик команды /start и /К_телу_мечты"""
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🛍️ Каталог товаров", callback_data="catalog")],
         [InlineKeyboardButton(text="📞 Контакты", callback_data="contacts")],
         [InlineKeyboardButton(text="🛒 Корзина (0)", callback_data="cart")]
     ])
+
     await message.answer(
         "👋 *Добро пожаловать в наш магазин!*\n\n"
         "Здесь вы можете приобрести цифровые товары.",
@@ -109,6 +110,5 @@ async def main():
     logger.info("Бот запускается...")
     await dp.start_polling(bot)
 
-
-async def main():
-    pass
+#if __name__ == "__main__":
+#    asyncio.run(main())
