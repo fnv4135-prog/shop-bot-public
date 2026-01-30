@@ -90,8 +90,7 @@ async def show_contacts(callback: types.CallbackQuery):
 
     await callback.message.edit_text(
         "📞 *Контакты:*\n\n"
-        "• Телеграм: @your_username\n"
-        "• Email: your@email.com\n"
+        "• Телеграм: smart_tech_opt\n"
         "• Время работы: 10:00-22:00\n\n"
         "📢 По всем вопросам пишите!",
         reply_markup=keyboard,
@@ -111,8 +110,5 @@ async def main():
     await dp.start_polling(bot)
 
 
-async def run_bot():
-    await main()
-
-#if __name__ == "__main__":
-#    asyncio.run(run_bot())
+#async def run_bot():
+#    await main()

@@ -1,63 +1,61 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 import os
 import logging
-from aiogram import types  # ← ДОБАВИТЬ эту строку!
-from main import bot, dp
 import asyncio
 
 app = Flask(__name__)
 
-# Берем токен из переменных окружения
+# Импортируем из main только после инициализации Flask
+from main import bot, dp
+from aiogram import types  # ← критически важно!
+
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
-
-# Формируем путь вебхука
 WEBHOOK_PATH = f"/webhook/{BOT_TOKEN}"
-
-# Берем URL из переменных окружения, если нет - используем хардкод
-RENDER_EXTERNAL_URL = os.environ.get('RENDER_EXTERNAL_URL', 'https://shop-bot-public.onrender.com')
-WEBHOOK_URL = RENDER_EXTERNAL_URL + WEBHOOK_PATH
+WEBHOOK_URL = f"https://shop-bot-public.onrender.com" + WEBHOOK_PATH
 
 logging.basicConfig(level=logging.INFO)
 
 
 @app.route('/')
 def home():
-    return "🛒 Telegram Shop Bot is running (Webhook mode)!"
+    return "🛒 Бот работает! Webhook mode"
 
 
 @app.route(WEBHOOK_PATH, methods=['POST'])
 async def webhook():
+    """Обработчик вебхука"""
     try:
-        # Получаем обновление от Telegram
-        update = request.json
-        update = types.Update(**update)
+        # Получаем данные от Telegram
+        data = request.get_json()
 
-        # Передаем диспетчеру
-        await dp.feed_update(bot, update)
+        # Создаем объект Update
+        update = types.Update(**data)
 
-        return 'ok', 200
+        # Передаем обработчику - ВНИМАНИЕ: метод feed_update не принимает bot в aiogram 3.x
+        await dp.feed_update(update)
+
+        return Response(status=200)
+
     except Exception as e:
-        logging.error(f"Ошибка в вебхуке: {e}")
-        return 'error', 500
+        logging.error(f"Webhook error: {str(e)}", exc_info=True)
+        return Response(status=500)
 
 
-async def on_startup():
-    """Устанавливаем вебхук при запуске"""
+async def setup_webhook():
+    """Настройка вебхука"""
     try:
-        # Удаляем старый вебхук (на всякий случай)
         await bot.delete_webhook(drop_pending_updates=True)
-
-        # Устанавливаем новый
         await bot.set_webhook(WEBHOOK_URL)
-        logging.info(f"✅ Вебхук установлен: {WEBHOOK_URL}")
+        logging.info(f"✅ Webhook установлен: {WEBHOOK_URL}")
     except Exception as e:
-        logging.error(f"❌ Ошибка установки вебхука: {e}")
+        logging.error(f"Webhook setup error: {e}")
 
+
+# Устанавливаем вебхук при старте
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+loop.run_until_complete(setup_webhook())
 
 if __name__ == "__main__":
-    # Запускаем установку вебхука
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(on_startup())
-
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
