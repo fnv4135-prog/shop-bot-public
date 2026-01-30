@@ -23,18 +23,15 @@ def home():
 
 @app.route(WEBHOOK_PATH, methods=['POST'])
 def webhook():
+    """Синхронный обработчик вебхука"""
     try:
-        # Получаем JSON от Telegram
         data = request.get_json()
+        update = types.Update(**data)
 
-        # СОЗДАЁМ переменную update из данных
-        update = types.Update(**data)  # ← КРИТИЧЕСКИ ВАЖНО!
-
-        # Запускаем обработку
-        # Устанавливаем вебхук при старте
+        # Запускаем асинхронную обработку
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(setup_webhook())  # ← ТОЛЬКО ЭТО ДОЛЖНО БЫТЬ
+        loop.run_until_complete(dp.feed_update(bot, update))
 
         return Response(status=200)
     except Exception as e:
@@ -43,7 +40,7 @@ def webhook():
 
 
 async def setup_webhook():
-    """Настройка вебхука"""
+    """Устанавливаем вебхук при запуске"""
     try:
         await bot.delete_webhook(drop_pending_updates=True)
         await bot.set_webhook(WEBHOOK_URL)
@@ -52,9 +49,10 @@ async def setup_webhook():
         logging.error(f"Webhook setup error: {e}")
 
 
-# Устанавливаем вебхук при старте
+# Устанавливаем вебхук при старте сервера
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
+loop.run_until_complete(setup_webhook())
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
