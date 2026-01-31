@@ -27,7 +27,7 @@ async def start_command(message: types.Message):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🛍️ Каталог товаров", callback_data="catalog")],
         [InlineKeyboardButton(text="📞 Контакты", callback_data="contacts")],
-        [InlineKeyboardButton(text="🛒 Корзина (0)", callback_data="cart")]
+        [InlineKeyboardButton(text="🛒 Корзина (0)", callback_data="cart")
     ])
 
     await message.answer(
