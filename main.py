@@ -23,12 +23,12 @@ products = [
 
 @dp.message(Command("start"))
 async def start_command(message: types.Message):
-    """Обработчик команды /start и /К_телу_мечты"""
+    """Обработчик команды /start"""
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🛍️ Каталог товаров", callback_data="catalog")],
         [InlineKeyboardButton(text="📞 Контакты", callback_data="contacts")],
-        [InlineKeyboardButton(text="🛒 Корзина (0)", callback_data="cart")
-    ])
+        [InlineKeyboardButton(text="🛒 Корзина (0)", callback_data="cart")]
+        ])
 
     await message.answer(
         "👋 *Добро пожаловать в наш магазин!*\n\n"
