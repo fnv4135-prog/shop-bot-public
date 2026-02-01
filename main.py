@@ -37,6 +37,15 @@ async def start_command(message: types.Message):
         parse_mode="Markdown"
     )
 
+@dp.callback_query(F.data == "cart")
+async def show_cart(callback: types.CallbackQuery):
+    """Корзина (заглушка)"""
+    await callback.answer("🛒 Корзина пока пуста. Скоро добавим товары!")
+
+@dp.callback_query(F.data == "catalog")
+async def show_catalog(callback: types.CallbackQuery):
+    """Каталог товаров"""
+    await callback.answer("📦 Каталог товаров. Скоро наполним!")
 
 @dp.callback_query(F.data == "catalog")
 async def show_catalog(callback: types.CallbackQuery):
@@ -91,9 +100,9 @@ async def show_contacts(callback: types.CallbackQuery):
 
     await callback.message.edit_text(
         "📞 *Контакты:*\n\n"
-        "• Телеграм: smart_tech_opt\n"
+        "• Телеграм: @smart_tech_opt\n"
         "• Время работы: 10:00-22:00\n\n"
-        "📢 По всем вопросам пишите!",
+        "📢 По всем вопросам пишите @NicolasBiz!",
         reply_markup=keyboard,
         parse_mode="Markdown"
     )
